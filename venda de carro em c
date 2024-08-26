@@ -1,0 +1,269 @@
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+
+typedef struct Carro {
+    int id;
+    char modelo[50];
+    char marca[50];
+    int ano;
+    float preco;
+    int estoque;
+} Carro;
+
+typedef struct Cliente {
+    int id;
+    char nome[50];
+    char cpf[15];
+    char telefone[15];
+    char endereco[50];
+} Cliente;
+
+typedef struct Venda {
+    int id;
+    int idCliente;
+    int idCarro;
+    float valorVenda;
+    char dataVenda[10];
+} Venda;
+
+void cadastrarCliente(Cliente *clientes, int *nClientes);
+Cliente buscarClientePorId(Cliente *clientes, int nClientes, int id);
+void inserirCarro(Carro *carros, int *nCarros);
+Carro buscarCarroPorId(Carro *carros, int nCarros, int id);
+void exibirCarros(Carro *carros, int nCarros);
+void alterarCarro(Carro *carros, int nCarros);
+void venderCarro(Carro *carros, int *nCarros, Venda *vendas, int *nVendas);
+Venda buscarVendaPorId(Venda *vendas, int nVendas, int id);
+void exibirVendas(Venda *vendas, int nVendas);
+
+int main() {
+    Cliente clientes[100];
+    Carro carros[100];
+    Venda vendas[100];
+    int nClientes = 0, nCarros = 0, nVendas = 0;
+
+    cadastrarCliente(clientes, &nClientes);
+    inserirCarro(carros, &nCarros);
+    exibirCarros(carros, nCarros);
+    alterarCarro(carros, nCarros);
+    venderCarro(carros, &nCarros, vendas, &nVendas);
+    exibirVendas(vendas, nVendas);
+
+    return 0;
+}
+
+void cadastrarCliente(Cliente *clientes, int *nClientes) {
+  // Aloca memória para um novo cliente
+  Cliente *novoCliente = (Cliente *)malloc(sizeof(Cliente));
+
+  // Lê os dados do novo cliente
+  printf("Digite o nome do cliente: ");
+  scanf("%s", novoCliente->nome);
+  printf("Digite o CPF do cliente: ");
+  scanf("%s", novoCliente->cpf);
+  printf("Digite o telefone do cliente: ");
+  scanf("%s", novoCliente->telefone);
+  printf("Digite o endereço do cliente: ");
+  scanf("%s", novoCliente->endereco);
+
+  // Adiciona o novo cliente ao array de clientes
+  clientes[*nClientes] = *novoCliente;
+  (*nClientes)++;
+
+  // Mensagem de sucesso
+  printf("Cliente cadastrado com sucesso!\n");
+}
+
+
+Cliente buscarClientePorId(Cliente *clientes, int nClientes, int id) {
+  Cliente clienteEncontrado;
+
+  // Percorre o array de clientes buscando pelo ID
+  for (int i = 0; i < nClientes; i++) {
+    if (clientes[i].id == id) {
+      clienteEncontrado = clientes[i];
+      break;
+    }
+  }
+
+  return clienteEncontrado;
+}
+
+
+void inserirCarro(Carro *carros, int *nCarros) {
+    // Aloca memória para um novo carro
+  Carro *novoCarro = (Carro *)malloc(sizeof(Carro));
+
+  // Lê os dados do novo carro
+  printf("Digite o ID do carro: ");
+  scanf("%d", &novoCarro->id);
+  printf("Digite o modelo do carro: ");
+  scanf("%s", novoCarro->modelo);
+  printf("Digite a marca do carro: ");
+  scanf("%s", novoCarro->marca);
+  printf("Digite o ano do carro: ");
+  scanf("%d", &novoCarro->ano);
+  printf("Digite o preço do carro: ");
+  scanf("%f", &novoCarro->preco);
+  printf("Digite a quantidade em estoque: ");
+  scanf("%d", &novoCarro->estoque);
+
+  // Adiciona o novo carro ao array de carros
+  carros[*nCarros] = *novoCarro;
+  (*nCarros)++;
+
+  // Mensagem de sucesso
+  printf("Carro inserido com sucesso!\n");
+
+}
+
+Carro buscarCarroPorId(Carro *carros, int nCarros, int id) {
+     Carro carroEncontrado;
+
+  // Percorre o array de carros buscando pelo ID
+  for (int i = 0; i < nCarros; i++) {
+    if (carros[i].id == id) {
+      carroEncontrado = carros[i];
+      break;
+    }
+  }
+
+  return carroEncontrado;
+}
+
+void exibirCarros(Carro *carros, int nCarros) {
+    // Verifica se há carros cadastrados
+  if (nCarros == 0) {
+    printf("Nenhum carro cadastrado!\n");
+    return;
+// Exibe o cabeçalho da tabela
+  printf("| ID | Modelo | Marca | Ano | Preço | Estoque |\n");
+  printf("|---|---|---|---|---|---|");
+
+  // Exibe os dados de cada carro
+  for (int i = 0; i < nCarros; i++) {
+    printf("| %d | %s | %s | %d | %.2f | %d |\n", carros[i].id, carros[i].modelo,
+           carros[i].marca, carros[i].ano, carros[i].preco, carros[i].estoque);
+  }
+}
+
+void alterarCarro(Carro *carros, int nCarros) {
+     int idCarro;
+  Carro carroAlterado;
+
+  // Lê o ID do carro a ser alterado
+  printf("Digite o ID do carro que deseja alterar: ");
+  scanf("%d", &idCarro);
+
+  // Busca o carro pelo ID
+  carroAlterado = buscarCarroPorId(carros, nCarros, idCarro);
+
+  // Verifica se o carro foi encontrado
+  if (carroAlterado.id == 0) {
+    printf("Carro não encontrado!\n");
+    return;
+  }
+
+  // Lê os novos dados do carro
+  printf("Digite o novo modelo do carro: ");
+  scanf("%s", carroAlterado.modelo);
+  printf("Digite a nova marca do carro: ");
+  scanf("%s", carroAlterado.marca);
+  printf("Digite o novo ano do carro: ");
+  scanf("%d", &carroAlterado.ano);
+  printf("Digite o novo preço do carro: ");
+  scanf("%f", &carroAlterado.preco);
+}
+
+void venderCarro(Carro *carros, int *nCarros, Venda *vendas, int *nVendas) {
+    int idCarro, quantidade;
+  Carro carroVendido;
+  Cliente cliente;
+
+  // Lê o ID do carro e a quantidade a ser vendida
+  printf("Digite o ID do carro: ");
+  scanf("%d", &idCarro);
+  printf("Digite a quantidade a ser vendida: ");
+  scanf("%d", &quantidade);
+
+  // Busca o carro pelo ID
+  carroVendido = buscarCarroPorId(carros, *nCarros, idCarro);
+
+  // Verifica se o carro foi encontrado
+  if (carroVendido.id == 0) {
+    printf("Carro não encontrado!\n");
+    return;
+  }
+
+  // Verifica se a quantidade em estoque é suficiente
+  if (carroVendido.estoque < quantidade) {
+    printf("Estoque insuficiente!\n");
+    return;
+  }
+
+  // Lê os dados do cliente
+  printf("Digite o nome do cliente: ");
+  scanf("%s", cliente.nome);
+  printf("Digite o CPF do cliente: ");
+  scanf("%s", cliente.cpf);
+
+  // Registra a venda
+  Venda novaVenda;
+  novaVenda.id = *nVendas + 1;
+  novaVenda.idCliente = 1; // Implementar função para buscar cliente
+  novaVenda.idCarro = idCarro;
+  novaVenda.valorVenda = carroVendido.preco * quantidade;
+  strcpy(novaVenda.dataVenda, "2024-03-11"); // Implementar função para obter data
+
+  // Adiciona a venda ao array de vendas
+  vendas[*nVendas] = novaVenda;
+  (*nVendas)++;
+
+  // Decrementa o estoque do carro
+  carroVendido.estoque -= quantidade;
+
+  // Atualiza o carro no array de carros
+  carros[idCarro - 1] = carroVendido;
+
+  // Mensagem de sucesso
+  printf("Venda realizada com sucesso!\n");
+
+}
+
+Venda buscarVendaPorId(Venda *vendas, int nVendas, int id) {
+    Venda vendaEncontrada;
+
+    // Percorre o array de vendas buscando pelo ID
+    for (int i = 0; i < nVendas; i++) {
+        if (vendas[i].id == id) {
+            vendaEncontrada = vendas[i];
+            break;
+        }
+    }
+
+    return vendaEncontrada;
+}
+
+void exibirVendas(Venda *vendas, int nVendas) {
+    // Verifica se há vendas cadastradas
+    if (nVendas == 0) {
+        printf("Nenhuma venda cadastrada!\n");
+        return;
+    }
+
+    // Exibe o cabeçalho da tabela
+    printf("| ID | Cliente | Carro | Valor | Data |\n");
+    printf("|---|---|---|---|---|\n");
+
+    // Exibe os dados de cada venda
+    for (int i = 0; i < nVendas; i++) {
+        // Implementar função para buscar nome do cliente
+        char nomeCliente[50];
+        // Implementar função para buscar modelo do carro
+        char modeloCarro[50];
+
+        printf("| %d | %s | %s | %.2f |\n", vendas[i].id, nomeCliente, modeloCarro, vendas[i].valorVenda);
+    }
+}
+
